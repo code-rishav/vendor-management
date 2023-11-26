@@ -1,10 +1,12 @@
 from django.shortcuts import render
+from django.utils import timezone
 from .models import PurchaseOrder
 # Create your views here.
 from rest_framework import viewsets,status
 from .serializers import PurchaseOrderSerializer
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.decorators import action
 
 class PurchaseOrderViewset(viewsets.ViewSet):
     permission_classes = [IsAuthenticated]
@@ -30,12 +32,17 @@ class PurchaseOrderViewset(viewsets.ViewSet):
     
     def create(seld,request,*args,**kwargs):
         data = request.data
-        serializer = PurchaseOrderSerializer(data=data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data,status=status.HTTP_201_CREATED)
-        else:
-            return Response(serializer.error_messages,status=status.HTTP_403_FORBIDDEN)
+        try:
+            serializer = PurchaseOrderSerializer(data=data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data,status=status.HTTP_201_CREATED)
+            else:
+                print(serializer.errors)
+                return Response(serializer.errors,status=status.HTTP_403_FORBIDDEN)
+        except Exception as e:
+            print(e)
+            return Response(e,status=status.HTTP_401_UNAUTHORIZED)
     
     def  update(self,request,pk=None):
         try:
@@ -58,8 +65,15 @@ class PurchaseOrderViewset(viewsets.ViewSet):
             instance.delete()
             return Response({'message':'object deleted'},status=status.HTTP_204_NO_CONTENT)
         except:
-            return Response({'message':'object not found'},status=status.HTTP_400_BAD_REQUEST)
-        
+            return Response({'message':'object not found'},status=status.HTTP_400_BAD_REQUEST)        
+
+    @action(detail=True,methods=['put','patch'],url_path='acknowledge')
+    def acknowledge(self,request,pk=None):
+        purchase_order = PurchaseOrder.objects.get(pk=pk)
+        purchase_order.acknowledgement_date = request.data['acknowledgement_date']
+        purchase_order.save(update_fields=['acknowledgement_date'])
+
+        print('in put call',request.data['acknowledgement_date'])
 
 
-        
+        return Response({'message':'purhcase order acknowledged'},status=status.HTTP_200_OK)
