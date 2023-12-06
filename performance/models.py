@@ -11,5 +11,5 @@ class Performance(models.Model):
     fulfillment_rate = models.FloatField()
 
     def __str__(self):
-        return self.vendor.name +"-"+ self.date
+        return self.vendor.name +"-"+ str(self.date)
 
