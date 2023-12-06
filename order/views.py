@@ -67,13 +67,18 @@ class PurchaseOrderViewset(viewsets.ViewSet):
         except:
             return Response({'message':'object not found'},status=status.HTTP_400_BAD_REQUEST)        
 
-    @action(detail=True,methods=['put','patch'],url_path='acknowledge')
+    @action(detail=True,methods=['post'],url_path='acknowledge')
     def acknowledge(self,request,pk=None):
-        purchase_order = PurchaseOrder.objects.get(pk=pk)
-        purchase_order.acknowledgement_date = request.data['acknowledgement_date']
-        purchase_order.save(update_fields=['acknowledgement_date'])
+        try:
+            purchase_order = PurchaseOrder.objects.get(pk=pk)
+            if 'acknowledgement_date' in request.data:
+                purchase_order.acknowledgement_date = request.data['acknowledgement_date']
+            else:
+                purchase_order.acknowledgement_date = timezone.now()
 
-        print('in put call',request.data['acknowledgement_date'])
+            purchase_order.save(update_fields=['acknowledgement_date'])
 
 
-        return Response({'message':'purhcase order acknowledged'},status=status.HTTP_200_OK)
+            return Response({'message':'purhcase order acknowledged'},status=status.HTTP_200_OK)
+        except:
+            return Response({'message':'request not accepted'},status=status.HTTP_406_NOT_ACCEPTABLE)
