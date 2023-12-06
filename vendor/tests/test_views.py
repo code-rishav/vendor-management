@@ -3,7 +3,7 @@ from rest_framework import status
 from django.test import TestCase
 from rest_framework.test import APIRequestFactory,force_authenticate
 from ..models import Vendor
-from ..serializers import VendorSerializer
+from ..serializers import VendorSerializer,VendorListSerializer
 from ..views import VendorViewSet
 from django.contrib.auth.models import User
 
@@ -14,9 +14,9 @@ user = User.objects.get(username='admin')
 class VendorViewTest(TestCase):
     """Test module for all vendor API"""
     def setUp(self):
-        Vendor.objects.create(vendor_code='testvendorcode1',name='test_vendor1',password='password1', contact_details='contact details1',address='address1')
-        Vendor.objects.create(vendor_code='testvendorcode2',name='test_vendor2',password='password2', contact_details='contact details2',address='address2')
-        Vendor.objects.create(vendor_code='testvendorcode3',name='test_vendor3',password='password3', contact_details='contact details3',address='address3')
+        Vendor.objects.create(vendor_code='testvendorcode1',name='test_vendor1', contact_details='contact details1',address='address1')
+        Vendor.objects.create(vendor_code='testvendorcode2',name='test_vendor2', contact_details='contact details2',address='address2')
+        Vendor.objects.create(vendor_code='testvendorcode3',name='test_vendor3', contact_details='contact details3',address='address3')
     
     def test_get_all_vendor(self):
         request = factory.get('/vendor/')
@@ -28,7 +28,7 @@ class VendorViewTest(TestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
     
     def test_get_detail_vendor(self):
-        request = factory.get('/vendor/testvendorcode1/')
+        request = factory.get('vendor/testvendorcode1/')
         force_authenticate(request,user=user)
         response = view(request)
         vendor = Vendor.objects.get(pk='testvendorcode1')
@@ -39,7 +39,7 @@ class VendorViewTest(TestCase):
         self.assertEqual(response.status_code,status.HTTP_200_OK)
     
     def test_post_detail_vendor(self):
-        vendor_object = {'vendor_code':'dummyvendorcode1','name':'dummy_vendor1','password':'dummy_password1', 'contact_details':'contact details1','address':'address1'}
+        vendor_object = {'vendor_code':'dummyvendorcode1','name':'dummy_vendor1', 'contact_details':'contact details1','address':'address1'}
         request = factory.post('/vendor/',vendor_object)
         force_authenticate(request,user=user)
         response = view(request)
@@ -51,7 +51,6 @@ class VendorViewTest(TestCase):
         updated_name = 'changednamevendor2'
         updated_data = {
         'vendor_code': vendor.vendor_code,
-        'password': vendor.password,
         'name': updated_name,
         'contact_details': vendor.contact_details,
         'address': vendor.address,
@@ -61,7 +60,7 @@ class VendorViewTest(TestCase):
             request = factory.put('/vendor/testvendorcode2/',data=serializer.data)
             force_authenticate(request,user=user)
             response = view(request,pk='testvendorcode2')
-            print("Response data",response)
+        
             self.assertEqual(response.status_code,status.HTTP_202_ACCEPTED)
         else:
            self.fail(f"Serializer not valid: {serializer.errors}")
@@ -70,7 +69,6 @@ class VendorViewTest(TestCase):
         request = factory.delete('/vendor/testvendorcode3/')
         force_authenticate(request,user=user)
         response = view(request,pk='testvendorcode3')
-        print(response.status_code)
         self.assertEqual(response.status_code,status.HTTP_204_NO_CONTENT)
 
     def test_performance_vendor(self):
