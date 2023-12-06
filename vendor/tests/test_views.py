@@ -1,8 +1,7 @@
 import json
 from rest_framework import status
-from django.test import TestCase,client
-from rest_framework.test import APIRequestFactory,APIClient,force_authenticate
-from django.urls import reverse
+from django.test import TestCase
+from rest_framework.test import APIRequestFactory,force_authenticate
 from ..models import Vendor
 from ..serializers import VendorSerializer
 from ..views import VendorViewSet
@@ -20,7 +19,6 @@ class VendorViewTest(TestCase):
         Vendor.objects.create(vendor_code='testvendorcode3',name='test_vendor3',password='password3', contact_details='contact details3',address='address3')
     
     def test_get_all_vendor(self):
-        #get API response
         request = factory.get('/vendor/')
         force_authenticate(request, user=user)
         response = view(request)
@@ -35,11 +33,8 @@ class VendorViewTest(TestCase):
         response = view(request)
         vendor = Vendor.objects.get(pk='testvendorcode1')
         serializer = VendorSerializer(vendor,many=False)
-        #self.assertEqual(response.data[0],serializer.data.get('name'))
         response_data = response.data
         serializer_data = serializer.data
-        #self.assertEqual(response.data[0],serializer.data['name'])
-        #self.assertEqual(response_data[0]['vendor_code'],serializer_data.get('vendor_code'))
         self.assertEqual(response_data[0],serializer_data)
         self.assertEqual(response.status_code,status.HTTP_200_OK)
     
@@ -77,3 +72,9 @@ class VendorViewTest(TestCase):
         response = view(request,pk='testvendorcode3')
         print(response.status_code)
         self.assertEqual(response.status_code,status.HTTP_204_NO_CONTENT)
+
+    def test_performance_vendor(self):
+        request = factory.get('/vendor/testvendorcode3/performance')
+        force_authenticate(request,user)
+        response = view(request)
+        self.assertEqual(response.status_code,status.HTTP_200_OK)
