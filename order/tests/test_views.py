@@ -16,7 +16,7 @@ user = User.objects.get(username='admin')
 class VendorViewTest(TestCase):
     """Test module for all vendor API"""
     def setUp(self):
-        vendor = Vendor.objects.create(vendor_code='testvendorcode1',name='test_vendor1',password='password1', contact_details='contact details',address='address')
+        vendor = Vendor.objects.create(vendor_code='testvendorcode1',name='test_vendor1', contact_details='contact details',address='address')
         PurchaseOrder.objects.create(po_number='testpo1',vendor=vendor,items={'name':'ABC','price':'123',},quantity=4,status='pending')
         PurchaseOrder.objects.create(po_number='testpo2',vendor=vendor,items={'name':'ABCD','price':'1234',},quantity=5,status='pending')
     
@@ -73,14 +73,3 @@ class VendorViewTest(TestCase):
         force_authenticate(request,user=user)
         response = view(request,pk='testpo2')
         self.assertEqual(response.status_code,status.HTTP_204_NO_CONTENT)
-    
-    # def test_status_po(self):
-    #     data = {'acknowledgement_date':timezone.now()}
-    #     url = reverse('acknowledge',kwargs={'pk':'testpo2'})
-    #     request = factory.post(url,data,format='json')
-    #     force_authenticate(request,user)
-    #     response = PurchaseOrderViewset.as_view({'post':'acknowledge'})(request,pk='testpo2')
-    #     print('Response data',response.data)
-    #     print(response.status_code)
-    #     self.assertEqual(response.status_code,status.HTTP_200_OK)
-    #     #self.assertEqual(response.data['acknowledgement_date'] is not None,True)
