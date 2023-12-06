@@ -3,7 +3,7 @@ from rest_framework import status
 from django.test import TestCase
 from rest_framework.test import APIRequestFactory,force_authenticate
 from ..models import Vendor
-from ..serializers import VendorSerializer,VendorListSerializer
+from ..serializers import VendorSerializer
 from ..views import VendorViewSet
 from django.contrib.auth.models import User
 
