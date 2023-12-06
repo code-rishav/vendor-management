@@ -73,6 +73,11 @@ python manage.py runserver 8080
 to create peformance data for all the vendors
 
 ```sh
+python manage.py task
+```
+
+to test the api run the test cases:
+```sh
 python manage.py test
 ```
 
