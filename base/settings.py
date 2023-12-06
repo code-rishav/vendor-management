@@ -25,12 +25,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-(ll(ce6*hv-fq_muy1rnr$ftre_j%l)j&gp_ym*%2#)xyau=1*"
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+#allowed host for developement 
+ALLOWED_HOSTS = ['*']
+
+SECRET_KEY = os.environ.get("SECRET_KEY")
 
 
 
@@ -44,12 +46,10 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "rest_framework",
-    "drf_spectacular",
     "dotenv",
     "vendor",
     "order",
     "performance",
-
 ]
 
 MIDDLEWARE = [
@@ -92,10 +92,6 @@ REST_FRAMEWORK = {
     ],
     "DEFAULT_SCHEMA_CLASS":'drf_spectacular.openapi.AutoSchema',
 
-}
-
-SPECTACULAR_SETTINGS = {
-    "TITLE":"VENDOR MANAGEMENT DOCUMENTATION",
 }
 
 #JWT SETTINGS
