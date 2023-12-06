@@ -3,7 +3,7 @@ from rest_framework import viewsets,status
 from rest_framework.response import Response
 from rest_framework.decorators import action
 from .models import Vendor
-from .serializers import VendorSerializer
+from .serializers import VendorSerializer,VendorListSerializer
 from rest_framework.permissions import IsAdminUser
 
 class VendorViewSet(viewsets.ViewSet):
@@ -13,7 +13,7 @@ class VendorViewSet(viewsets.ViewSet):
     def list(self,request):
         try:
             queryset = Vendor.objects.all()
-            serializer = VendorSerializer(queryset,many=True)
+            serializer = VendorListSerializer(queryset,many=True)
         except:
             return Response({'message':'object not found'},status=status.HTTP_204_NO_CONTENT)
         return Response(serializer.data,status=status.HTTP_200_OK)
