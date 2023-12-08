@@ -1,12 +1,12 @@
 # VENDOR MANAGEMENT SYSTEM
 
-This API serves as the backend for a vendor-management platform, facilitating various functionalities related to managing purchase orders, vendors, hostorical performance and authentication.
+This API serves as the backend for a vendor-management platform, facilitating various functionalities related to managing purchase orders, vendors, historical performance and authentication.
 
 The API has been tested in [Postman](https://www.postman.com/).
 The documentation for the API has been developed using Postman.
 [View API Documentation](https://documenter.getpostman.com/view/28292091/2s9YeN2UEa)
 
-Please ensure following dependencies to be installed on your system:
+Please ensure following dependencies are installed on your system:
 - Python version 3 or higher
 - Package manager (pip)
 
@@ -52,13 +52,13 @@ create migrations for the models
 you need to run the command for specific apps as migrations files have been excluded from the repo
 ```sh
 python manage.py makemigrations
-python manage.py makemigrations orer vendor performance
+python manage.py makemigrations order vendor performance
 python manage.py migrate
 ```
 
 create an admin user for the system 
 ```sh
-python mangage,py createsuperuser
+python manage,py createsuperuser
 ```
 
 run the server
@@ -70,18 +70,19 @@ example:
 python manage.py runserver 8080
 ```
 
-to create peformance data for all the vendors
+to create performance data for all the vendors
 
 ```sh
 python manage.py task
 ```
 
-to test the api run the test cases:
+to test the API run the test cases:
 ```sh
 python manage.py test
 ```
 
-Addtional Improvements
+Additional Improvements
 - Celery can be used to create a scheduled generation of historical performance data for vendors
-- Seprate endpoint for status update should be made, which will help implementing the logic without creating an overhead for post_save or pre_save
+- A separate endpoint for status updates should be made, which will help implement the logic without creating an overhead for post_save or pre_save
+- vendor and purchase order id can be generated using UUID, rather than custom values
 
